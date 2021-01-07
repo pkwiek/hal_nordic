@@ -46,6 +46,13 @@ zephyr_library_sources(
   src/nrf_802154_request_direct.c
   )
 
+elseif (CONFIG_NRF_802154_SL_SIMPLE)
+zephyr_library_sources(
+  src/nrf_802154_notification_swi.c
+  src/nrf_802154_priority_drop_swi.c
+  src/nrf_802154_request_swi.c
+  )
+
 else()
 zephyr_library_sources(
   src/nrf_802154_notification_swi.c
@@ -118,6 +125,16 @@ if (CONFIG_NRF_802154_SL_OPENSOURCE)
     NRF_802154_DELAYED_TRX_ENABLED=1
     # Disable IFS
     NRF_802154_IFS_ENABLED=0
+  )
+
+elseif (CONFIG_NRF_802154_SL_SIMPLE)
+  zephyr_compile_definitions(
+    # Disable Frame Timestamps
+    NRF_802154_FRAME_TIMESTAMP_ENABLED=0
+    # Disable DTRX
+    NRF_802154_DELAYED_TRX_ENABLED=0
+    # Disable IFS
+    NRF_802154_IFS_ENABLED=1
   )
 
 else()

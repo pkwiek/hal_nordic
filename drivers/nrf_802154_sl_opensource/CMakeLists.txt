@@ -9,6 +9,14 @@ if (CONFIG_NRF_802154_SL_OPENSOURCE)
     src/nrf_802154_sl_timer.c
     )
 
+elseif (CONFIG_NRF_802154_SL_SIMPLE)
+  zephyr_include_directories(include)
+  zephyr_library_sources(
+    src/platform/gpiote/nrf_802154_gpiote_zephyr.c
+    src/platform/gpiote/nrf_802154_gpiote_crit_sect.c
+    src/platform/lp_timer/nrf_802154_lp_timer_zephyr.c
+    )
+
 else()
   zephyr_library_sources(
     src/platform/gpiote/nrf_802154_gpiote_zephyr.c

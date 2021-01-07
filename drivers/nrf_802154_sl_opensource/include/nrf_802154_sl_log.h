@@ -213,7 +213,7 @@ extern volatile uint32_t gp_nrf_802154_sl_log_ptr;
             nrf_802154_sl_debug_log_write_raw(                                                  \
                 ((NRF_802154_LOG_TYPE_FUNCTION_ENTER) << NRF_802154_SL_DEBUG_LOG_TYPE_BITPOS) | \
                 ((NRF_802154_MODULE_ID) << NRF_802154_SL_DEBUG_LOG_MODULE_ID_BITPOS) |          \
-                ((uint32_t)((uintptr_t)(__func__)) << 0));                                      \
+                ((uint32_t)((uintptr_t)(__func__) & 0xFFFFF) << 0));                            \
         }                                                                                       \
     }                                                                                           \
     while (0)
@@ -230,7 +230,7 @@ extern volatile uint32_t gp_nrf_802154_sl_log_ptr;
             nrf_802154_sl_debug_log_write_raw(                                                 \
                 ((NRF_802154_LOG_TYPE_FUNCTION_EXIT) << NRF_802154_SL_DEBUG_LOG_TYPE_BITPOS) | \
                 ((NRF_802154_MODULE_ID) << NRF_802154_SL_DEBUG_LOG_MODULE_ID_BITPOS) |         \
-                ((uint32_t)((uintptr_t)(__func__)) << 0));                                     \
+                ((uint32_t)((uintptr_t)(__func__) & 0xFFFFF) << 0));                           \
         }                                                                                      \
     }                                                                                          \
     while (0)

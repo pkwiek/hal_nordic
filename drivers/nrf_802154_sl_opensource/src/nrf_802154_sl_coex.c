@@ -37,6 +37,8 @@
  */
 
 #include "nrf_802154_sl_coex.h"
+#include "rsch/nrf_802154_rsch.h"
+#include "rsch/coex/nrf_802154_wifi_coex.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -63,12 +65,25 @@ void nrf_802154_wifi_coex_cfg_3wire_set(const nrf_802154_wifi_coex_3wire_if_conf
 
 nrf_802154_wifi_coex_ret_t nrf_802154_wifi_coex_init(void)
 {
+    nrf_802154_wifi_coex_granted(WIFI_COEX_REQUEST_STATE_NO_REQUEST);
+
     return NRF_802154_WIFI_COEX_RET_DEFAULT_ERR;
+}
+
+void nrf_802154_wifi_coex_uninit(void)
+{
+    // Intentionally empty
 }
 
 bool nrf_802154_wifi_coex_is_enabled(void)
 {
     return false;
+}
+
+void nrf_802154_wifi_coex_prio_request(rsch_prio_t priority)
+{
+    (void)priority;
+    // Intentionally empty
 }
 
 #ifdef __cplusplus
