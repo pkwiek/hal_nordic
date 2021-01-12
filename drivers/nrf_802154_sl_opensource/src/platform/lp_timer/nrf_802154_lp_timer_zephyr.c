@@ -102,8 +102,7 @@ static volatile uint8_t  m_mutex;                  ///< Mutex for write access t
 static volatile bool     m_clock_ready;            ///< Information that LFCLK is ready.
 static volatile bool     m_shall_fire_immediately; ///< Information if timer should fire immediately.
 
-/** @brief Forward declaration of RTC interrupt handler. */
-static void rtc_irq_handler(void);
+static void rtc_irq_handler(uint32_t id, uint32_t cc_value, void *user_data);
 
 static uint32_t overflow_counter_get(void);
 
@@ -383,6 +382,8 @@ static void timer_start_at(compare_channel_t channel,
     m_target_times[channel] = round_up_to_timer_ticks_multiply(target_time);
 
     nrf_rtc_cc_set(NRF_802154_RTC_INSTANCE, m_cmp_ch[channel].channel, target_counter);
+    z_nrf_rtc_timer_compare_set(m_cmp_ch[channel].channel, target_counter,
+                                rtc_irq_handler, NULL);
 }
 
 /**
@@ -568,8 +569,13 @@ void nrf_802154_clock_lfclk_ready(void)
     m_clock_ready = true;
 }
 
-static void rtc_irq_handler(void)
+static void rtc_irq_handler(uint32_t id, uint32_t cc_value, void *user_data)
 {
+    (void)id;
+    (void)cc_value;
+    (void)user_data;
+
+#if 0
     // Handle overflow.
     if (nrf_rtc_event_check(NRF_802154_RTC_INSTANCE, NRF_RTC_EVENT_OVERFLOW))
     {
@@ -582,6 +588,8 @@ static void rtc_irq_handler(void)
         // Handle OVERFLOW event by reading current value of overflow counter.
         (void)overflow_counter_get();
     }
+#else
+#endif
 
     // Handle compare match.
     if (m_shall_fire_immediately)
@@ -590,12 +598,21 @@ static void rtc_irq_handler(void)
         handle_compare_match(true);
     }
 
+#if 0
     if (nrf_rtc_int_enable_check(NRF_802154_RTC_INSTANCE, m_cmp_ch[LP_TIMER_CHANNEL].int_mask) &&
         nrf_rtc_event_check(NRF_802154_RTC_INSTANCE, m_cmp_ch[LP_TIMER_CHANNEL].event))
     {
         handle_compare_match(false);
     }
+#else
+    if (id == m_cmp_ch[LP_TIMER_CHANNEL].channel)
+    {
+        handle_compare_match(false);
+    }
 
+#endif
+
+#if 0
     if (nrf_rtc_int_enable_check(NRF_802154_RTC_INSTANCE, m_cmp_ch[SYNC_CHANNEL].int_mask) &&
         nrf_rtc_event_check(NRF_802154_RTC_INSTANCE, m_cmp_ch[SYNC_CHANNEL].event))
     {
@@ -616,12 +633,13 @@ static void rtc_irq_handler(void)
             nrf_802154_lp_timer_synchronized();
         }
     }
+#endif
 }
 
-void NRF_802154_RTC_IRQ_HANDLER(void)
-{
-    rtc_irq_handler();
-}
+//void NRF_802154_RTC_IRQ_HANDLER(void)
+//{
+//    rtc_irq_handler();
+//}
 
 #ifndef UNITY_ON_TARGET
 __WEAK void nrf_802154_lp_timer_synchronized(void)
