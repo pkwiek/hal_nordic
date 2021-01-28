@@ -19,7 +19,6 @@ set(NRF_802154_SL_SOURCES_NRF52
 
 set(NRF_802154_SL_SOURCES_NRF53
   ${NRF_802154_SL_ROOT}/src/platform/gpiote/nrf_802154_gpiote_crit_sect.c
-  ${NRF_802154_SL_ROOT}/src/platform/lp_timer/nrf_802154_lp_timer_zephyr.c
 )
 
 set(NRF_802154_SL_INCLUDE_DIRS "")
